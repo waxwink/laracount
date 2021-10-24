@@ -1,0 +1,38 @@
+{
+    "name": "waxwink/laracount",
+    "description": "Accounting service for laravel",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+
+    "authors": [
+        {
+            "name": "Mohamadreza Pishdad",
+            "email": "mpishdad89@google.com",
+            "role": "Developer"
+        }
+    ],
+
+    "require": {
+        "php": "^8.0",
+        "illuminate/database": "9.x-dev",
+        "illuminate/contracts": "9.x-dev",
+        "illuminate/container": "9.x-dev",
+        "waxwink/accounting": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "orchestra/testbench": "7.0.x-dev"
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Waxwink\\Laracount\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Waxwink\\Laracount\\Test\\": "tests"
+        }
+    }
+}
