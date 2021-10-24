@@ -4,6 +4,17 @@
     "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "keywords": [
+        "waxwink",
+        "laravel",
+        "accounting",
+        "payment",
+        "wallet",
+        "deposit",
+        "withdraw",
+        "transaction",
+        "laracount"
+    ],
 
     "authors": [
         {
@@ -32,6 +43,13 @@
     "autoload-dev": {
         "psr-4": {
             "Waxwink\\Laracount\\Test\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Waxwink\\Laracount\\LaracountServiceProvider"
+            ]
         }
     }
 }
