@@ -2,23 +2,27 @@
 
 namespace Waxwink\Laracount;
 
+use Illuminate\Cache\CacheManager;
 use Waxwink\Accounting\Contracts\LockerInterface;
 
 class Locker implements LockerInterface
 {
+    public function __construct(protected CacheManager $cache)
+    {
+    }
 
     public function isLocked(int $account): bool
     {
-        return false;
+        return (bool) $this->cache->get("lock_account_$account") ?? false;
     }
 
     public function lock(int $account): bool
     {
-        // TODO: Implement lock() method.
+        return $this->cache->set("lock_account_$account", true);
     }
 
     public function releaseLock(int $account): bool
     {
-        // TODO: Implement releaseLock() method.
+        return $this->cache->forget("lock_account_$account");
     }
 }

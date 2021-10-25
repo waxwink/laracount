@@ -2,6 +2,8 @@
 
 namespace Waxwink\Laracount\Test;
 
+use Waxwink\Accounting\Contracts\LockerInterface;
+use Waxwink\Accounting\Exceptions\LockedAccountException;
 use Waxwink\Laracount\AccountingService;
 
 class AccountingServiceTest extends TestCase
@@ -172,6 +174,17 @@ class AccountingServiceTest extends TestCase
 
         $this->assertEquals(-900, $this->service->revenueBalanceByRef($ref));
         $this->assertEquals(-100, $this->service->taxBalanceByRef($ref));
+    }
+
+    public function testUserCanNotGetBalanceWhenHeIsLocked()
+    {
+        $locker = app(LockerInterface::class);
+
+        $locker->lock($this->testUser->getAccountId());
+
+        $this->expectException(LockedAccountException::class);
+
+        $this->service->balance($this->testUser);
     }
 
 }

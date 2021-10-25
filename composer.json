@@ -26,9 +26,10 @@
 
     "require": {
         "php": "^8.0",
-        "waxwink/accounting": "0.1",
+        "waxwink/accounting": "0.1.1",
         "illuminate/database": "^8.67",
         "illuminate/container": "^8.67",
+        "illuminate/cache": "^8.67",
         "illuminate/contracts": "^8.67"
     },
     "require-dev": {

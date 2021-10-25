@@ -1,4 +1,4 @@
-#Laravel Accounting System
+# Laravel Accounting System
 This package can manage accounting of a Laravel application with an easy approach and great functionalities. 
 These functionalities are
 * Deposit and withdrawing from wallet
@@ -61,7 +61,7 @@ The system can also pay to the users. Like the monthly profit or for the service
 $service->payTo($user, 3000);
 ```
 
-###Refund
+### Refund
 Users can refund money
 ```php
 $service->refund($user, 1000);
@@ -79,7 +79,7 @@ $service->balance($user);
 ```
 
 ### Other Balance APIs
-Bank balance can be retrieved:
+Bank, revenue and expense balances can be retrieved by:
 ```php
 $service->bankBalance();
 $service->revenueBalance();
