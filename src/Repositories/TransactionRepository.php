@@ -25,13 +25,18 @@ class TransactionRepository implements TransactionRepositoryInterface
     {
         return DB::table("transaction_records")->select(DB::raw('(SUM(debt) - SUM(credit)) as balance'))
                  ->where("account_id", $accountId)
-                 ->when($ref, fn($q)=>$q->where("ref_id", $ref))
+                 ->when($ref, fn($q) => $q->where("ref_id", $ref))
                  ->first()->balance ?? 0;
     }
 
     public function findByAccount(int $accountId, array $options): \ArrayAccess
     {
-        return $this->getOrPaginate(TransactionRecord::where("account_id", $accountId), $options);
+        return $this->getOrPaginate(
+            TransactionRecord::where("account_id", $accountId)
+                             ->when(key_exists("from", $options),
+                                 fn($q) => $q->where("created_at", ">", $options["from"]))
+                             ->when(key_exists("to", $options),
+                                 fn($q) => $q->where("created_at", ">", $options["to"])), $options);
     }
 
     protected function getOrPaginate(Builder $query, array $options)

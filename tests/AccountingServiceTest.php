@@ -55,7 +55,6 @@ class AccountingServiceTest extends TestCase
         $this->service->withdraw($this->testUser, 400);
 
         $this->assertEquals(-600, $this->service->balance($this->testUser));
-
     }
 
     public function testUserCanGetHisTransactionsList()
@@ -75,11 +74,31 @@ class AccountingServiceTest extends TestCase
         $this->service->deposit($this->testUser, 500);
         $this->service->withdraw($this->testUser, 400);
 
-        $list = $this->service->transactionsList($this->testUser, paginate:true, page:1, perPage:2);
+        $list = $this->service->transactionsList($this->testUser, paginate: true, page: 1, perPage: 2);
 
         $this->assertCount(2, $list);
 
-        $list = $this->service->transactionsList($this->testUser, paginate:true, page:2, perPage:2);
+        $list = $this->service->transactionsList($this->testUser, paginate: true, page: 2, perPage: 2);
+
+        $this->assertCount(1, $list);
+    }
+
+    public function testTransactionsCanBeFetchedByTimeFiltering()
+    {
+        $this->service->deposit($this->testUser, 1000);
+        $this->travel(-5)->days();
+        $this->service->deposit($this->testUser, 500);
+        $this->travel(-5)->days();
+        $this->service->withdraw($this->testUser, 400);
+        $this->travelBack();
+
+        $list = $this->service->transactionsList($this->testUser, from: now()->subDays(6));
+
+        $this->assertCount(2, $list);
+
+        $list = $this->service->transactionsList($this->testUser,
+            from: now()->subDays(6),
+            to: now()->subDays(4));
 
         $this->assertCount(1, $list);
     }
@@ -89,12 +108,12 @@ class AccountingServiceTest extends TestCase
         $this->service->deposit($this->testUser, 1000);
         $this->service->deposit($this->testUser, 500);
 
-        $list = $this->service->transactionsList($this->testUser, columns:['created_at', 'debt', 'credit']);
+        $list = $this->service->transactionsList($this->testUser, columns: ['created_at', 'debt', 'credit']);
         $item = $list->first();
         $this->assertCount(3, $item->getAttributes());
 
-
-        $list = $this->service->transactionsList($this->testUser, columns:['created_at', 'debt', 'credit', 'voucher_id']);
+        $list = $this->service->transactionsList($this->testUser, columns:
+            ['created_at', 'debt', 'credit', 'voucher_id']);
         $item = $list->first();
         $this->assertCount(4, $item->getAttributes());
     }
