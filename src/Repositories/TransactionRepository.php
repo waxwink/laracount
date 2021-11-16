@@ -33,6 +33,8 @@ class TransactionRepository implements TransactionRepositoryInterface
     {
         return $this->getOrPaginate(
             TransactionRecord::where("account_id", $accountId)
+                             ->when(key_exists("orderBy", $options),
+                                 fn($q) => $q->orderBy($options["orderBy"], $options["direction"] ?? "desc"))
                              ->when(key_exists("from", $options),
                                  fn($q) => $q->where("created_at", ">", $options["from"]))
                              ->when(key_exists("to", $options),
