@@ -94,13 +94,18 @@ Transactions List of an account can be fetched
 ```php
 $service->transactionsList($user);
 ```
-you can paginate the transactions:
+You can paginate the transactions this way:
 ```php
 $service->transactionsList($user, paginate: true, perPage:5, page:2);
 ```
-columns can also be defined:
+Columns can also be defined:
 ```php
 $service->transactionsList($user, columns:['balance', 'created_at', 'description']);
+```
+Items can be sorted like this:
+```php
+$service->transactionsList($user, orderBy: "created_at");
+$service->transactionsList($user, orderBy: "created_at", direction:"asc");
 ```
 Date filtering is also available:
 ```php
@@ -108,7 +113,7 @@ $service->transactionsList($user, from:"2017-02-01");
 $service->transactionsList($user, from:"2017-02-01", to:"2020-01-01");
 ```
 ## Cool, Right?
-A little should be taken care of before using the above methods. The users should provide an `account_id` and that ID must be grater than 10 because there the first tens are reserved for the non-user accounts like **bank, revenue, expense, ...**
+A little thing should be taken care of before using the above methods. The users should provide an `account_id` and that ID must be grater than 10 because there the first tens are reserved for the non-user accounts like **bank, revenue, expense, ...**
 So you must implement the `HasAccount` interface and use the `HasAccountTrait`. So your user model becomes something like this :
 ```php
 use Illuminate\Database\Eloquent\Model;
@@ -127,5 +132,43 @@ We have a service for that which should be used only once per user (for example 
 ```php
 $registrationService= app(\Waxwink\Laracount\AccountRegistrationService::class);
 $registrationService->registerAccountFor($user);
+```
+
+When you put this code in your registering controller it would become something like this:
+```php
+class RegisterController extends Controller
+
+    // ..... 
+    
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(protected AccountRegistrationService $accountRegistrationService)
+    {
+        $this->middleware('guest');
+    }
+    
+    // ....
+    
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  array  $data
+     * @return \App\Models\User
+     */
+    protected function create(array $data)
+    {
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+        $this->accountRegistrationService->registerAccountFor($user);
+        return $user;
+    }
+    //....
+}
 ```
 That's all. Now you are ready to use the above methods.
