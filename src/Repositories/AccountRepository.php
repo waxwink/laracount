@@ -10,6 +10,11 @@ class AccountRepository
 {
     public function create(?Model $owner = null, ?string $description = null): Account
     {
+        $account = Account::where("description", $description)->first();
+        if (! $account){
+            return  $account;
+        }
+
         $account = Account::make(["description" => $description]);
         $owner && $account->owner()->associate($owner);
         $account->save();
