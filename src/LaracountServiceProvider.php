@@ -13,6 +13,10 @@ use Waxwink\Laracount\Repositories\VoucherRepository;
 
 class LaracountServiceProvider extends ServiceProvider
 {
+    protected array $defaultAccounts = [
+        "bank","revenue", "expense", "tax"
+    ];
+
     public function register()
     {
         $this->app->singleton(TransactionRepositoryInterface::class, TransactionRepository::class);
@@ -27,6 +31,10 @@ class LaracountServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadMigrationsFrom(__DIR__ . "/../database/");
+
+        foreach ($this->defaultAccounts as $key => $account){
+            app(AccountConfiguration::class)->set($account, $key+1);
+        }
     }
 
 
